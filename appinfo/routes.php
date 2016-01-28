@@ -28,4 +28,8 @@ return ['routes' => [
     ['name' => 'notes_api#destroy', 'url' => '/api/v0.2/notes/{id}', 'verb' => 'DELETE'],
     ['name' => 'notes_api#preflighted_cors', 'url' => '/api/v0.2/{path}',
      'verb' => 'OPTIONS', 'requirements' => ['path' => '.+']],
+
+
+
+
 ]];

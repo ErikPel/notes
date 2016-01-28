@@ -35,6 +35,7 @@ app.factory('NotesModel', function () {
                 note.title = updated.title;
                 note.modified = updated.modified;
                 note.content = updated.content;
+                note.handwrittenContent = updated.handwrittenContent;
             } else {
                 this.notes.push(updated);
                 this.notesIds[updated.id] = updated;

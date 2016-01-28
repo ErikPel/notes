@@ -15,18 +15,22 @@ script('notes', [
     'vendor/underscore/underscore',
     'vendor/prism/prism',
     'vendor/mdEdit/mdedit.min',
-    'public/app.min'
+    'public/app.min',
+    'vendor/jquery-ui-signature/excanvas',
+    'vendor/jquery-ui-signature/jquery.signature',
+    'vendor/jquery-ui-signature/signature',
+
 ]);
 
 style('notes', [
     '../js/vendor/mdEdit/mdedit',
     '../js/vendor/mdEdit/prism',
     'vendor/bootstrap/tooltip',
-    'notes'
+    'notes',
+    'jquery.signature'
 ]);
 
 ?>
-
 <div id="app" ng-app="Notes" ng-controller="AppController"
     ng-init="init(<?php p($_['lastViewedNote']); ?>)" ng-cloak>
 
@@ -60,6 +64,7 @@ style('notes', [
     </div>
 
     <div id="app-content" ng-class="{loading: is.loading}">
+        <div id="controls"><div class="actions creatable"><button ng-click="writebyHand()" href="#" class="button new" data-original-title="" title=""><img src="/owncloud/core/img/actions/add.svg" alt="Uusi"></button></div></div>
         <div id="app-content-container" ng-view></div>
     </div>
 </div>

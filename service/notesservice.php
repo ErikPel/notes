@@ -48,7 +48,9 @@ class NotesService {
 
         foreach($files as $file) {
             if($this->isNote($file)) {
-                $notes[] = Note::fromFile($file);
+                $id = $file->getId();
+                $handwrittenContent = $this->getHandwrittenContent($id, $userId)->getContent();
+                $notes[] = Note::fromFile($file,$handwrittenContent);
             }
         }
 
@@ -65,7 +67,8 @@ class NotesService {
      */
     public function get ($id, $userId) {
         $folder = $this->getFolderForUser($userId);
-        return Note::fromFile($this->getFileById($folder, $id));
+        $handwrittenContent = $this->getHandwrittenContent($id, $userId)->getContent();
+        return Note::fromFile($this->getFileById($folder, $id), $handwrittenContent);
     }
 
 
@@ -82,10 +85,14 @@ class NotesService {
         // check new note exists already and we need to number it
         // pass -1 because no file has id -1 and that will ensure
         // to only return filenames that dont yet exist
+
         $path = $this->generateFileName($folder, $title, "txt", -1);
         $file = $folder->newFile($path);
-
-        return Note::fromFile($file);
+        //create json for handwritten notes with the name {txtfileid}.json
+        $fileid = $file->getId();
+        $path = $this->generateFileName($folder, (string)$fileid, "json", -1);
+        $handwrittenFile = $folder->newFile($path);
+        return Note::fromFile($file,$handwrittenFile->getcontent());
     }
 
 
@@ -94,14 +101,16 @@ class NotesService {
      * dynamically generated and filename conflicts are resolved
      * @param int $id the id of the note used to update
      * @param string $content the content which will be written into the note
+     * @param string $handwrittenContent json content from the handwriting feature
      * the title is generated from the first line of the content
      * @throws NoteDoesNotExistException if note does not exist
      * @return \OCA\Notes\Db\Note the updated note
      */
-    public function update ($id, $content, $userId){
+    public function update ($id, $content, $userId, $handwrittenContent=""){
         $folder = $this->getFolderForUser($userId);
         $file = $this->getFileById($folder, $id);
-
+        $handwrittenFile = $this->getHandwrittenContent($id, $userId);
+        $handwrittenFile->putContent($handwrittenContent);
         // generate content from the first line of the title
         $splitContent = explode("\n", $content);
         $title = $splitContent[0];
@@ -118,21 +127,19 @@ class NotesService {
         // generate filename if there were collisions
         $currentFilePath = $file->getPath();
         $basePath = '/' . $userId . '/files/Notes/';
-        $fileExtension = pathinfo($file->getName(), PATHINFO_EXTENSION);
+        $fileExtension = ".txt";
         $newFilePath = $basePath . $this->generateFileName($folder, $title, $fileExtension, $id);
 
         // if the current path is not the new path, the file has to be renamed
         if($currentFilePath !== $newFilePath) {
             $file->move($newFilePath);
         }
-
         $file->putContent($content);
 
         \OCP\Util::writeLog('notes', print_r(Note::fromFile($file), true), \OCP\Util::ERROR);
 
-        return Note::fromFile($file);
+        return Note::fromFile($file,$handwrittenFile->getContent());
     }
-
 
     /**
      * Deletes a note
@@ -179,6 +186,20 @@ class NotesService {
         return $folder;
     }
 
+    /**
+     * @param int $id
+     * @param int $userId
+     * @return File
+     */
+    private function getHandwrittenContent ($id, $userId)
+    {
+        $path = '/' . $userId . '/files/Notes/' . (string)$id . ".json";
+        //throw new \Exception($handwrittenContent);
+
+        $handwrittenFile = $this->root->get($path);
+        return $handwrittenFile;
+
+    }
 
     /**
      * get path of file and the title.txt and check if they are the same

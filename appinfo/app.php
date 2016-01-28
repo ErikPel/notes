@@ -26,5 +26,7 @@ $container->query('OCP\INavigationManager')->add(function () use ($container) {
         'icon' => $urlGenerator->imagePath('notes', 'notes.svg'),
         'name' => $l10n->t('Notes')
     ];
+
+
 });
 

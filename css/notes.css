@@ -3,6 +3,12 @@
  * This file is licensed under the Affero General Public License version 3 or later.
  * See the COPYING file.
  */
+/* Styles for signature plugin v1.1.2. */
+.kbw-signature {
+    display: inline-block;
+    border: 1px solid #a0a0a0;
+    -ms-touch-action: none;
+}
 
 #app-navigation {
     padding-bottom: 0; /* no settings bar, so no padding needed */
@@ -61,8 +67,8 @@
     display: block;
     min-height: 100%;
     width: 100%;
-    margin: 0 0 -50px;
-    padding: 30px 20px 90px 30px;
+    /*margin: 0 0 -50px;
+    padding: 30px 20px 90px 30px;*/
     font-size: 16px;
     line-height: 170%;
     background: none;

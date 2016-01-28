@@ -24,6 +24,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setTitle(string $value)
  * @method string getContent()
  * @method void setContent(string $value)
+ * @method string getHandwrittenContent()
+ * @method void setHandwrittenContent(string $value)
  * @package OCA\Notes\Db
  */
 class Note extends Entity {
@@ -31,20 +33,24 @@ class Note extends Entity {
     public $modified;
     public $title;
     public $content;
+    public $handwrittenContent;
 
     public function __construct() {
         $this->addType('modified', 'integer');
+        $this->addType('handwrittenContent', 'string');
     }
 
     /**
      * @param File $file
+     * @param string $handwrittenContent
      * @return static
      */
-    public static function fromFile(File $file){
+    public static function fromFile(File $file, $handwrittenContent){
         $note = new static();
         $note->setId($file->getId());
         $note->setContent($file->getContent());
         $note->setModified($file->getMTime());
+        $note->setHandwrittenContent($handwrittenContent);
         $note->setTitle(pathinfo($file->getName(),PATHINFO_FILENAME)); // remove extension
         $note->resetUpdatedFields();
         return $note;

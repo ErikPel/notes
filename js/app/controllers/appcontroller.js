@@ -5,14 +5,19 @@
  * See the COPYING file.
  */
 
-app.controller('AppController', function ($scope, $location, is) {
-    'use strict';
+ app.controller('AppController', function ($scope, $location, is) {
+ 	'use strict';
 
-    $scope.is = is;
+ 	$scope.is = is;
 
-    $scope.init = function (lastViewedNote) {
-        if(lastViewedNote !== 0) {
-            $location.path('/notes/' + lastViewedNote);
-        }
-    };
-});
+ 	$scope.init = function (lastViewedNote) {
+ 		if(lastViewedNote !== 0) {
+ 			$location.path('/notes/' + lastViewedNote);
+ 		}
+ 	};
+ 	$scope.writebyHand = function() {
+ 		//alert('useHandWriting');
+
+ 		$scope.$broadcast('useHandWriting');
+};
+ });

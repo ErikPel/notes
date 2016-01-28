@@ -12,17 +12,18 @@ app.controller('NoteController', function($routeParams, $scope, NotesModel,
     NotesModel.updateIfExists(note);
 
     $scope.note = NotesModel.get($routeParams.noteId);
-
+    console.log($scope.note);
     $scope.isSaving = function () {
         return SaveQueue.isSaving();
     };
-
     $scope.updateTitle = function () {
         $scope.note.title = $scope.note.content.split('\n')[0] ||
             t('notes', 'New note');
     };
 
     $scope.save = function() {
+        $scope.note.handwrittenContent = $('.kbw-signature').signature('toJSON');
+
         var note = $scope.note;
         SaveQueue.add(note);
     };
